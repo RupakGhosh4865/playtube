@@ -12,5 +12,8 @@
     "chai"
   ],
   "author": "rupak ghosh",
-  "license": "ISC"
+  "license": "ISC",
+  "devDependencies": {
+    "nodemon": "^3.0.2"
+  }
 }
