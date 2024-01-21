@@ -10,6 +10,7 @@ mongoose.connect(process.env.DB_CONNECT, {
   useNewUrlParser: true,
 })
   .then(() => {
+    app.listen (process.env.PORT  ||8000, () => {console.log(`Server running on port ${process.env.PORT}`)})
     console.log('Connected successfully to MongoDB');
     
     // Set mongoose options after connecting
