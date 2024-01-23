@@ -1,5 +1,7 @@
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import {app} from './app.js'
+
 
 // Load environment variables
 dotenv.config({ path: "./env" });
