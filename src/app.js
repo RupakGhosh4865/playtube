@@ -4,6 +4,7 @@ import cookieParser from "cookie-parser"
 
 
 
+
 const app = express()
 
 app.use(cors({
@@ -18,6 +19,12 @@ app.use(cookieParser())
 
 
 
+
+
+//multer
+
+
+
 // routes import
 import Router from "./routes/user.routes.js"
 // routes declaration
@@ -26,3 +33,14 @@ app.use("/api/v1/users", Router)
 
 //http://localhost:8000/api/v1/users/register
 export {app}
+
+
+
+
+
+
+
+
+
+
+

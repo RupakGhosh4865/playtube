@@ -8,8 +8,7 @@ const registeruser = asynchandler(async (req,res)  => {
    
 
 const {fullName, email, username, password } = req.body
-    console.log("email: ", email );
-    console.log("password:",password);
+  
 
 
 
@@ -19,18 +18,20 @@ if ([fullName,email,username,password].some((field)=>(field?.trim()===""))
 }
 
 
-const existeduser = User.findOne({
+const existeduser = await User.findOne({
    $or:[{email},{username}]
 })
 
 if (existeduser){
    throw new apierror(409,"user already exists")}
 
-
+//console.log(req.files);
   const avatarlocalpath = req.files?.avatar[0]?.path ;
 
-  const coverimagelocalpath =req.files?.coverimage[0]?.path;
-
+  let coverimagelocalpath;
+    if (req.files && Array.isArray(req.files.coverimage) && req.files.coverimage.length > 0) {
+        coverimagelocalpath = req.files.coverimage[0].path
+    }
 
 if (!avatarlocalpath){
 throw new apierror(400,"avatar is required")

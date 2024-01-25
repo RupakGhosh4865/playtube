@@ -2,11 +2,15 @@ const asynchandler =(fn) =>async (req,res,next)=>{
     try {
 await fn(req,res,next)
     } catch(error){
-        res.status(err.code || 500).json({success : false,message : err.message }
+        res.status(error.code || 500).json({success : false,message : error.message }
             )
 }
    
+
 }
+
+
+export {asynchandler}
 
 // const asynchandler =(requesthandler) =>{
 //     return (req,res,next)=>{
@@ -20,4 +24,4 @@ await fn(req,res,next)
 
 
 
-export {asynchandler}
+
