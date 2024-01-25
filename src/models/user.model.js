@@ -1,30 +1,25 @@
-  import moongoose ,{schema }from "mongoose" ;
+  import mongoose ,{Schema }from "mongoose" ;
 import  jwt from "jsonwebtoken" ;
 import bcrypt from "bcrypt" ;   
-  const userSchema = new moongoose.Schema(
+  const userSchema = new Schema(
     {
         username : {type : String , required : true , unique : true, lowercase :true,trim :true ,index:true},
         email : {type : String , required : true , unique : true,lowercase :true,trim :true ,index:true},
-        fulname : {type : string , required :true,trim :true ,index:true},
+        fulName : {type : String , required :true,trim :true ,index:true},
         avatar: {type : String,required:true},
-        coverimage:{type:string, require:true},
-        watchhistory : {type : schema.Types.ObjectId , ref : "Video" },
+        coverimage:{type:String, require:true},
+        watchhistory : {type : Schema.Types.ObjectId , ref : "Video" },
         password : {type : String , required : true},
-        refreshToken : {type : String , required : true},
-        },
+        refreshToken : {type : String , required : true}, },
         {
             timestamps : true,
         }
-
-
-
-    
   )
   userSchema.pre("save",async function(next){
     if (this.ismodified("password")) return next();
   
    
-   this.password = bcrypt.hash(this.password,10)
+   this.password = await bcrypt.hash(this.password,10)
    next()
 
   })
@@ -61,4 +56,4 @@ process.env.REFRESH_TOKEN_SECRET,
 )
 }
 
-  export const User = moongoose.model("User",userSchema)
+  export const User = mongoose.model("User",userSchema)

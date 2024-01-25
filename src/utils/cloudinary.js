@@ -15,7 +15,7 @@ try{
     if(!localfilePath)
         return null
 
-const response =await cloudinay.uploader.upload(localfilePath,{
+const response =await cloudinary.uploader.upload(localfilePath,{
 resource_type: "auto"
 }) 
 
