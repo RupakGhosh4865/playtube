@@ -4,6 +4,25 @@ import {User} from '../models/user.model.js'
 import{uploadoncloudinary} from '../utils/cloudinary.js' ;
 import { apiresponse } from '../utils/apiresponse.js';
 
+
+//generate access and refresh token
+const generarteaccessandrefreshtoken = async (userId)=>{
+   try {
+      const user = await User.findById(userId)
+     const accesstoken =user.gettoken()
+     const refreshtoken =user.getrefreshtoken ()
+     
+user.refreshtoken =refreshtoken
+await user.save ({validateBeforeSave :false})
+
+return {accesstoken,refreshtoken}
+
+   }catch(error){
+      throw new apierror(500,'something went wrong while ggenerating refresh and access token')
+}
+}
+
+//register
 const registeruser = asynchandler(async (req,res)  => { 
    
 
@@ -74,5 +93,76 @@ return res.status(201).json(
 
 
 })
+//login
+const loginuser = asynchandler(async (req,res)  => {  
+//req-> data
+//username or email
+//find the user
+//password check
+//access and refress token
+//send cookies
+const{email,username,password} =req.body
+if (!email && !username){
+   throw new apierror(400,"email or username is required")
+}
 
-export {registeruser,}
+const user= await User.findOne({
+   $or:[{email},{username}]
+})
+
+if (!user){
+   throw new apierror(404,"user not found")
+}
+
+
+const ispasswordvalid =await user.ispasswordcorrect (password)
+
+if (!ispasswordvalid){
+   throw new apierror(401,"invalid password")
+}
+const {accesstoken,refreshtoken} = await generarteaccessandrefreshtoken(user._id)
+
+
+const loginuser = await User.findById(user._id).select("-password -refreshtoken")
+
+const options ={
+   httpOnly :true,
+   secure :true,
+}
+
+return res
+.status(200)
+.cookie("refreshtoken",refreshtoken,options)
+.cookie("accesstoken",accesstoken,options)
+.json(
+   new apiresponse(
+      200,
+      {user : loginuser,accesstoken,refreshtoken},
+      "user logged in successfully")
+)
+})
+//logout
+const logoutuser = asynchandler(async (req,res)  => {  
+  await User.findByIdAndUpdate(
+      req.user._id,
+      {
+         $set:{
+            refreshtoken:undefined
+         }
+      },{
+         new:true
+      }
+      );
+      const options ={
+         httpOnly :true,
+         secure :true
+      }
+      return res 
+      .status(200)
+      .clearCookie("refreshtoken",options)
+      .clearCookie("accesstoken",options)
+      .json(new apiresponse(200,{},"user logged out successfully")) 
+})
+
+
+export {registeruser,loginuser,logoutuser,}

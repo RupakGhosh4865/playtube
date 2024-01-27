@@ -35,7 +35,7 @@ import bcrypt from "bcrypt" ;
         _id :this._id,
         username : this.username,
         email : this.email,
-        fullName :this.fulName,
+        fullName :this.fullName,
         
     },
     process.env.ACCESS_TOKEN_SECRET,
@@ -44,13 +44,13 @@ import bcrypt from "bcrypt" ;
     }
     )
   }
-  userSchema.methods.getrefreshtoken = function(){return jwt.sign({
-    _id :this._id,
+  userSchema.methods.getrefreshtoken = function(){
+    return jwt.sign(
+      {_id :this._id,
     username : this.username,
     email : this.email,
-    fulName :this.fulname,
-    
-},
+    fulName :this.fullName,
+    },
 process.env.REFRESH_TOKEN_SECRET,
 {
     expiresIn : process.env.REFRESH_TOKEN_EXPIRY

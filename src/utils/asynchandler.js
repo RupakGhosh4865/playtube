@@ -1,24 +1,29 @@
-const asynchandler =(fn) =>async (req,res,next)=>{
+// asynchandler.js
+const asynchandler = (fn) => async (req, res, next) => {
     try {
-await fn(req,res,next)
-    } catch(error){
-        res.status(error.code || 500).json({success : false,message : error.message }
-            )
-}
-   
+      await fn(req, res, next);
+    } catch (error) {
+      console.error("Error caught in asynchandler:", error);
+  
+      res.status(error.code || 500).json({
+        success: false,
+        message: error.message || "Internal Server Error",
+        
+      });
+    }
+  };
+  
+  
+ 
+  
 
-}
-
-
-export {asynchandler}
-
-// const asynchandler =(requesthandler) =>{
-//     return (req,res,next)=>{
-//     promise.resolve(requesthandler(req,res,next)). catch((err)=>
+// const asynchandler =(requesthandler) =>
+//      (req,res,next)=>{
+//     Promise.resolve(requesthandler(req,res,next)).catch(err=>
 //         next(err))
     
-// }}
-
+// }
+export  { asynchandler };
 
 
 
