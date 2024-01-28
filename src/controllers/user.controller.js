@@ -21,7 +21,6 @@ return {accesstoken,refreshtoken}
       throw new apierror(500,'something went wrong while ggenerating refresh and access token')
 }
 }
-
 //register
 const registeruser = asynchandler(async (req,res)  => { 
    
@@ -164,7 +163,6 @@ const logoutuser = asynchandler(async (req,res)  => {
       .json(new apiresponse(200,{},"user logged out successfully")) 
 })
 //user refreshaccesstoken  end point
-
 const refreshaccestoken =asynchandler(async(req,res)=>{
    const incomingrefreshtoken= req.cookies.refreshtoken || req.body.refreshtoken
 
@@ -203,7 +201,6 @@ return res
 }
 })
 //cuurent userpassword
-
 const changecurrentuserpassword =asynchandler(async(req,res)=>{
    const {oldpassword,newpassword}=req.body
     
@@ -230,7 +227,6 @@ const getcurrentuser =asynchandler(async(req,res)=>{
 .json(new apiresponse(200,req.user,"current user fetched succesfully"))
 })
 //update account details
-
 const updateaccountdetails =asynchandler(async(req,res)=>{
    const {fullName,email,username}=req.body
    if (!fullName ||  !email || !username){
@@ -251,14 +247,13 @@ const updateaccountdetails =asynchandler(async(req,res)=>{
       .status(200)
       .json(new apiresponse(200,user,"user updated successfully"))
 })
-
 // upadate user avatar
-
 const updateuseravatar =asynchandler(async(req,res)=>{
    const avatarlocalpath = req.files?.path 
    if (!avatarlocalpath){
       throw new apierror(400,"avatar is missing")
    }
+    //TODO: delete old image - assignment
    const avatar = await uploadoncloudinary(avatarlocalpath)
    if (!avatar.url){
       throw new apierror(400,"error while uploading on avatar")
@@ -276,7 +271,6 @@ const updateuseravatar =asynchandler(async(req,res)=>{
       .status(200)
       .json(new apiresponse(200,user,"user updated successfully"))
 })
-
 //update user coverimage
 const updateusercoverimage =asynchandler(async(req,res)=>{
    const coverimagelocalpath = req.files?.path 
@@ -355,7 +349,7 @@ const getuserchannelprofile = asynchandler(async(req, res) => {
                channelsSubscribedToCount: 1,
                isSubscribed: 1,
                avatar: 1,
-               coverImage: 1,
+               coverimage: 1,
                email: 1
 
            }
@@ -426,12 +420,9 @@ const getwatchhistory = asynchandler(async(req, res) => {
        )
    )
 })
-
-
-
-
-
-export {registeruser,
+//export
+export {
+   registeruser,
    loginuser,
    logoutuser,
    refreshaccestoken,
@@ -440,5 +431,6 @@ export {registeruser,
    updateaccountdetails,
    updateuseravatar,
    updateusercoverimage,
-getwatchhistory,
-getuserchannelprofile}
+   getwatchhistory,
+   getuserchannelprofile
+}
