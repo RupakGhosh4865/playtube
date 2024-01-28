@@ -202,7 +202,243 @@ return res
    throw new apierror(401,"invalid refresh token")
 }
 })
+//cuurent userpassword
+
+const changecurrentuserpassword =asynchandler(async(req,res)=>{
+   const {oldpassword,newpassword}=req.body
+    
+   const user =await User.findById(req.user?._id)
+   const ispasswordcorrect=await user.ispasswordcorrect(oldpassword)
+
+if (!ispasswordcorrect){throw new apierror(400,"invalid old password") 
+}   
+
+user.password=newpassword
+await user.save({
+   validateBeforeSave:false
+})
+
+return res
+.status(200)
+.json(new apiresponse(200,{},"password updated successfully"))
+
+})
+//getcurrentuser
+const getcurrentuser =asynchandler(async(req,res)=>{
+   return res
+.status(200)
+.json(new apiresponse(200,req.user,"current user fetched succesfully"))
+})
+//update account details
+
+const updateaccountdetails =asynchandler(async(req,res)=>{
+   const {fullName,email,username}=req.body
+   if (!fullName ||  !email || !username){
+      throw new apierror(400,"all fields are required")
+   } 
+
+   const user =await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+         $set:{fullName,
+            email:email,
+            username:username,
+      }
+   },
+      {new :true}
+      ).select("-password ")
+      return res
+      .status(200)
+      .json(new apiresponse(200,user,"user updated successfully"))
+})
+
+// upadate user avatar
+
+const updateuseravatar =asynchandler(async(req,res)=>{
+   const avatarlocalpath = req.files?.path 
+   if (!avatarlocalpath){
+      throw new apierror(400,"avatar is missing")
+   }
+   const avatar = await uploadoncloudinary(avatarlocalpath)
+   if (!avatar.url){
+      throw new apierror(400,"error while uploading on avatar")
+   }
+   const user =await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+         $set:{
+            avatar:avatar.url
+         }
+      },
+      {new :true}
+      ).select("-password ")
+      return res
+      .status(200)
+      .json(new apiresponse(200,user,"user updated successfully"))
+})
+
+//update user coverimage
+const updateusercoverimage =asynchandler(async(req,res)=>{
+   const coverimagelocalpath = req.files?.path 
+   if (!avatarlocalpath){
+      throw new apierror(400,"avatar is missing")
+   }
+   const coverimage = await uploadoncloudinary(coverimagelocalpath)
+   if (!coverimage.url){
+      throw new apierror(400,"error while uploading on avatar")
+   }
+   const user =await User.findByIdAndUpdate(
+      req.user?._id,
+      {
+         $set:{
+            avatar:avatar.url
+         }
+      },
+      {new :true}
+      ).select("-password ")
+      return res
+      .status(200)
+      .json(new apiresponse(200,user,"user updated successfully"))
+})
+//get user profile
+const getuserchannelprofile = asynchandler(async(req, res) => {
+   const {username} = req.params
+
+   if (!username?.trim()) {
+       throw new apierror(400, "username is missing")
+   }
+
+   const channel = await User.aggregate([
+       {
+           $match: {
+               username: username?.toLowerCase()
+           }
+       },
+       {
+           $lookup: {
+               from: "subscriptions",
+               localField: "_id",
+               foreignField: "channel",
+               as: "subscribers"
+           }
+       },
+       {
+           $lookup: {
+               from: "subscriptions",
+               localField: "_id",
+               foreignField: "subscriber",
+               as: "subscribedTo"
+           }
+       },
+       {
+           $addFields: {
+               subscribersCount: {
+                   $size: "$subscribers"
+               },
+               channelsSubscribedToCount: {
+                   $size: "$subscribedTo"
+               },
+               isSubscribed: {
+                   $cond: {
+                       if: {$in: [req.user?._id, "$subscribers.subscriber"]},
+                       then: true,
+                       else: false
+                   }
+               }
+           }
+       },
+       {
+           $project: {
+               fullName: 1,
+               username: 1,
+               subscribersCount: 1,
+               channelsSubscribedToCount: 1,
+               isSubscribed: 1,
+               avatar: 1,
+               coverImage: 1,
+               email: 1
+
+           }
+       }
+   ])
+
+   if (!channel?.length) {
+       throw new apierror(404, "channel does not exists")
+   }
+
+   return res
+   .status(200)
+   .json(
+       new apiresponse(200, channel[0], "User channel fetched successfully")
+   )
+})
+//get watch history
+const getwatchhistory = asynchandler(async(req, res) => {
+   const user = await User.aggregate([
+       {
+           $match: {
+               _id: new mongoose.Types.ObjectId(req.user._id)
+           }
+       },
+       {
+           $lookup: {
+               from: "videos",
+               localField: "watchHistory",
+               foreignField: "_id",
+               as: "watchHistory",
+               pipeline: [
+                   {
+                       $lookup: {
+                           from: "users",
+                           localField: "owner",
+                           foreignField: "_id",
+                           as: "owner",
+                           pipeline: [
+                               {
+                                   $project: {
+                                       fullName: 1,
+                                       username: 1,
+                                       avatar: 1
+                                   }
+                               }
+                           ]
+                       }
+                   },
+                   {
+                       $addFields:{
+                           owner:{
+                               $first: "$owner"
+                           }
+                       }
+                   }
+               ]
+           }
+       }
+   ])
+
+   return res
+   .status(200)
+   .json(
+       new apiresponse(
+           200,
+           user[0].watchhistory,
+           "Watch history fetched successfully"
+       )
+   )
+})
 
 
 
-export {registeruser,loginuser,logoutuser,refreshaccestoken}
+
+
+export {registeruser,
+   loginuser,
+   logoutuser,
+   refreshaccestoken,
+   changecurrentuserpassword,
+   getcurrentuser,
+   updateaccountdetails,
+   updateuseravatar,
+   updateusercoverimage,
+getwatchhistory,
+getuserchannelprofile}
