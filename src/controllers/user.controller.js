@@ -163,12 +163,12 @@ const logoutuser = asynchandler(async (req,res)  => {
       .clearCookie("accesstoken",options)
       .json(new apiresponse(200,{},"user logged out successfully")) 
 })
-//user refresh,access  token  end point
+//user refreshaccesstoken  end point
 
 const refreshaccestoken =asynchandler(async(req,res)=>{
    const incomingrefreshtoken= req.cookies.refreshtoken || req.body.refreshtoken
 
-if (incomingrefreshtoken) {
+if (!incomingrefreshtoken) {
    throw new apierror(400,"refreshtoken is required")
 }
  try {
