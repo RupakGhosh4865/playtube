@@ -1,5 +1,10 @@
 <span style="border-bottom: 4px solid black;">Mega Backend Project: Production-Grade Full Stack Application</span>
+
+""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
+
 This comprehensive backend project leverages top production-grade techniques to deliver a feature-rich web application. Utilizing Node.js, Express, Bcrypt, JWT, Apollo Server, Cloudinary, Cookie Parser, CORS, Dotenv, HBS, MongoDB, Mongoose, and Multer for API responses, the project encompasses advanced functionalities such as commenting, user dashboards, likes, playlist subscriptions, tweets, user verification, login/logout, password change, image and video models, and more.
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 
 Tech Stack:
 Node.js: Server-side runtime for JavaScript.
@@ -18,21 +23,12 @@ Multer: Middleware for handling file uploads.
 Project Structure:
 bash
 Copy code
-project-root/
-│
-├── controllers/
-├── middleware/
-├── models/
-├── routes/
-├── utils/
-├── .env
-├── .gitignore
-├── package.json
-├── server.js
-└── README.md
-Features:
-User Authentication:
 
+/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+
+Features:
+
+User Authentication:
 Secure user signup, login, and logout.
 JWT-based authentication for secure sessions.
 User Verification:
