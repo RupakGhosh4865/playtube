@@ -1,5 +1,6 @@
 <span style="border-bottom: 4px solid black;">Mega Backend Project: Production-Grade Full Stack Application</span>
 
+[model link](https://app.eraser.io/workspace/YtPqZ1VogxGy1jzIDkzj)
 """"""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""""
 
 This comprehensive backend project leverages top production-grade techniques to deliver a feature-rich web application. Utilizing Node.js, Express, Bcrypt, JWT, Apollo Server, Cloudinary, Cookie Parser, CORS, Dotenv, HBS, MongoDB, Mongoose, and Multer for API responses, the project encompasses advanced functionalities such as commenting, user dashboards, likes, playlist subscriptions, tweets, user verification, login/logout, password change, image and video models, and more.
